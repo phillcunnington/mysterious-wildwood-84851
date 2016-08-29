@@ -11,6 +11,7 @@ class LandingPage extends React.Component {
         <Jumbotron>
           <h1>Welcome!</h1>
           <p>This is the accounting, budgeting app.</p>
+          <p><Button bsStyle="primary" href="auth/google">Login</Button></p>
         </Jumbotron>
       </div>
     );
