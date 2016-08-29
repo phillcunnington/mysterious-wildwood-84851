@@ -6,6 +6,15 @@ const logger = require("morgan");
 const fallback = require("express-history-api-fallback");
 const root = `${__dirname}/../public`;
 
+// Mongo and Mongoose setup
+const mongoose = require("mongoose");
+mongoose.Promise = require("bluebird");
+const User = mongoose.model("Users", {
+    google_id: String
+});
+mongoose.set('debug', true);
+mongoose.connect(process.env.MONGODB_URI);
+
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
@@ -15,7 +24,11 @@ passport.use(new GoogleStrategy({
         callbackURL: process.env.GOOGLE_REDIRECT_URI
     },
     function(accessToken, refreshToken, profile, done) {
-        done(null, profile.id);
+        User.findOne({ "google_id": profile.id })
+            .select("_id google_id")
+            .exec(function(err, user) {
+                done(err, user);
+            });
     }
 ));
 
