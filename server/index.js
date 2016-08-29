@@ -57,6 +57,14 @@ function authenticate(req, res, next) {
     res.redirect("/");
 }
 
+app.get("/", function (req, res, next) {
+    if (req.isAuthenticated()) {
+        res.redirect("/app");
+    } else {
+        return next();
+    }
+});
+
 app.use(express.static("public"));
 
 app.all("/app", authenticate);
