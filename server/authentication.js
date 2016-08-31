@@ -56,8 +56,7 @@ module.exports = {
             app.use(session({
                 secret: process.env.SESSION_SECRET,
                 resave: false,
-                saveUninitialized: false,
-                cookie: {httpOnly: false}
+                saveUninitialized: false
             }));
 
             app.use(passport.initialize());
@@ -72,6 +71,11 @@ module.exports = {
                     // Successful authentication, redirect home.
                     res.redirect("/app");
                 });
+
+            app.get("/auth/logout", function(req, res) {
+                req.logout();
+                res.redirect("/");
+            });
         }
     },
 
