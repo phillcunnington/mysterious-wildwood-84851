@@ -1,10 +1,12 @@
 "use strict";
 
+import webpack from "webpack";
 import dotenv from "dotenv";
 import path from "path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import CleanWebpackPlugin from "clean-webpack-plugin";
 import validate from "webpack-validator";
+import merge from "webpack-merge";
 dotenv.config();
 
 const PATHS = {
@@ -13,10 +15,10 @@ const PATHS = {
     build: path.join(__dirname, "public")
 };
 
-const config = {
-    entry: {
-        app: PATHS.app
-    },
+const common = {
+    entry: [
+        PATHS.app
+    ],
     output: {
         path: PATHS.build,
         filename: "[name].js"
@@ -37,7 +39,7 @@ const config = {
         loaders: [
             {
                 test: /\.(js|jsx)$/,
-                loaders: ["babel?cacheDirectory"],
+                loaders: ["react-hot-loader", "babel?cacheDirectory"],
                 include: PATHS.app
             },
             {
@@ -47,13 +49,40 @@ const config = {
             }
         ]
     },
-    devtool: "eval-source-map",
-    devServer: {
-        historyApiFallback: true,
-        stats: "errors-only",
-        host: process.env.HOST,
-        port: process.env.PORT
-    }
+    devtool: "source-map"
 };
+
+let config;
+switch(process.env.NODE_ENV) {
+    case "production":
+        config = common;
+        break;
+    default:
+        config = merge(
+            common,
+            {
+                entry: [
+                    "webpack-dev-server/client?http://0.0.0.0:3001",
+                    "webpack/hot/only-dev-server",
+                ],
+                plugins: [
+                    new webpack.HotModuleReplacementPlugin()
+                ],
+                devtool: "eval-source-map",
+                devServer: {
+                    hot: true,
+                    contentBase: "app/",
+                    historyApiFallback: true,
+                    stats: "errors-only",
+                    host: process.env.HOST,
+                    port: process.env.DEV_PORT,
+                    proxy: {
+                        "/auth/google": "http://localhost:" + process.env.PORT,
+                        "/api": "http://localhost:" + process.env.PORT,
+                    }
+                }
+            }
+        );
+}
 
 module.exports = validate(config);
