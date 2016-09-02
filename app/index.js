@@ -4,6 +4,7 @@ import { Router, Route, browserHistory } from "react-router";
 import App from "./App";
 import LandingPage from "./LandingPage";
 import FailedLoginPage from "./FailedLoginPage";
+import styles from "./styles/main.css";
 
 ReactDOM.render(
   <Router history={browserHistory}>

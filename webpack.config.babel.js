@@ -11,7 +11,7 @@ dotenv.config();
 
 const PATHS = {
     app: path.join(__dirname, "app"),
-    data: path.join(__dirname, "data"),
+    styles: path.join(__dirname, "app", "styles"),
     build: path.join(__dirname, "public")
 };
 
@@ -43,9 +43,9 @@ const common = {
                 include: PATHS.app
             },
             {
-                test: /\.json$/,
-                loaders: ["json"],
-                include: PATHS.data
+                test: /\.css$/,
+                loaders: ["style-loader", "css-loader"],
+                include: PATHS.styles
             }
         ]
     },
