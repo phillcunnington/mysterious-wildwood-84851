@@ -1,0 +1,22 @@
+/* Top level app styles */
+.app {
+    margin: auto;
+    max-width: 450px;
+}
+
+.app__logout-button {
+    float: right;
+}
+
+/* Transaction list styles */
+.transaction-list {
+    padding-top: 35px;
+}
+
+.list-group {
+    margin-bottom: 0;
+}
+
+.transaction-list__list-item-amount {
+    float: right;
+}
