@@ -14,6 +14,8 @@ app.get("/", authentication.forwardIfAuthenticated);
 app.use(express.static("public"));
 app.all("/app", authentication.enforceAuthenticationWithRedirect);
 
+const api = require("./api");
+api.configure(app);
 
 app.use(fallback("index.html", { root }));
 
