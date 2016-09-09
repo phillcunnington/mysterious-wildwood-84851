@@ -1,7 +1,11 @@
+const mongoose = require("mongoose");
+const bluebird = require("bluebird");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const session = require("cookie-session");
 
 function initMongoose() {
-    const mongoose = require("mongoose");
-    mongoose.Promise = require("bluebird");
+    mongoose.Promise = bluebird;
     mongoose.set("debug", true);
     return mongoose;
 }
@@ -12,10 +16,7 @@ function initUserModel(mongoose) {
     });
 }
 
-function initPassport(User) {
-    const passport = require("passport");
-    const GoogleStrategy = require("passport-google-oauth20").Strategy;
-
+function initPassport(Users) {
     passport.use(new GoogleStrategy({
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -23,7 +24,7 @@ function initPassport(User) {
         },
         function(accessToken, refreshToken, profile, done) {
             console.log("user: " + profile.id);
-            User.findOne({ "google_id": profile.id })
+            Users.findOne({ "google_id": profile.id })
                 .select("_id google_id")
                 .exec(function(err, user) {
                     done(err, user);
@@ -52,11 +53,13 @@ module.exports = {
         return function (app) {
             mongoose.connect(process.env.MONGODB_URI);
 
-            const session = require("express-session");
-            app.use(session({
+            app.use(session({ //TODO when does session end?
                 secret: process.env.SESSION_SECRET,
                 resave: false,
-                saveUninitialized: false
+                saveUninitialized: false,
+                cookie: {
+                    maxAge: 30000
+                }
             }));
 
             app.use(passport.initialize());
@@ -79,7 +82,7 @@ module.exports = {
         }
     },
 
-    "enforceAuthentication": function (req, res, next) {
+    "enforceAuthenticationWithRedirect": function (req, res, next) {
         if (req.isAuthenticated()) {
             return next();
         }
