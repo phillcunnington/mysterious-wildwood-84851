@@ -1,36 +1,31 @@
-import React from "react";
+import React, { Component, PropTypes } from "react";
+import { connect } from "react-redux";
 import { Button } from "react-bootstrap";
 import TransactionListView from "./TransactionListView";
-import _ from "lodash";
+import AddTransactionCollapsable from "./AddTransactionCollapsable";
+import { loadTransactions } from "./actions";
 
-export default React.createClass({
-  getInitialState: function() {
-      return {
-          transactions: []
-      }
-  },
-
+const App = React.createClass({
   componentDidMount: function() {
-    fetch("/api/transactions", {
-      method: "GET",
-      credentials: "same-origin"
-    }).then(response => {
-      return response.json();
-    }).then((json) => {
-      this.setState({
-        transactions: _.orderBy(json, ["date"], ["desc"])
-      });
-    }).catch(error => {
-      console.error("Failed to get transactions");
-    });
+      const { dispatch } = this.props;
+      dispatch(loadTransactions());
   },
 
   render() {
     return (
       <div className="app">
         <span className="app__logout-button"><Button bsStyle="link" href="auth/logout">Logout</Button></span>
-        <TransactionListView transactions={this.state.transactions} />
+        <AddTransactionCollapsable />
+        <TransactionListView transactions={this.props.transactions} />
       </div>
     );
   }
-})
+});
+
+const mapStateToProps = (state) => {
+    return {
+        transactions: state.transactions
+    }
+};
+
+export default connect(mapStateToProps)(App);

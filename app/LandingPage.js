@@ -1,7 +1,7 @@
 import React from "react";
 import { Jumbotron, Button } from "react-bootstrap";
 
-const LandingPage = () => (
+export default () => (
   <div style={{textAlign: "center"}}>
     <Jumbotron>
       <h1>Welcome!</h1>
@@ -10,5 +10,3 @@ const LandingPage = () => (
     </Jumbotron>
   </div>
 );
-
-export default LandingPage

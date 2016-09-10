@@ -2,7 +2,7 @@ import React from "react";
 import { Jumbotron, Button } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
-const FailedLoginPage = () => (
+export default () => (
   <div style={{textAlign: "center"}}>
     <Jumbotron>
       <p>Login Failed!</p>
@@ -14,5 +14,3 @@ const FailedLoginPage = () => (
     </Jumbotron>
   </div>
 );
-
-export default FailedLoginPage

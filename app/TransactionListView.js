@@ -2,18 +2,7 @@ import React, { PropTypes } from "react";
 import { ListGroup } from "react-bootstrap";
 import _ from "lodash";
 import moment from "moment";
-import numeral from "numeral";
-numeral.defaultFormat("$0,0.00");
-numeral.language('en-GB', {
-  delimiters: {
-    thousands: ',',
-    decimal: '.'
-  },
-  currency: {
-    symbol: '£'
-  }
-});
-numeral.language('en-GB');
+import numeral from "./configureNumeral";
 
 const groupTransactionsByDate = (transactions) => {
   return _.reduce(transactions, (result, transaction) => {
@@ -63,7 +52,7 @@ TransactionListItem.propTypes = {
 const TransactionList = ({ transactions }) => (
   <div className="transaction-list">
     <ListGroup componentClass="ul">
-      {generateListItems(transactions)}
+      {generateListItems(_.orderBy(transactions, ["date", "_id"], ["desc", "desc"]))}
     </ListGroup>
   </div>
 );

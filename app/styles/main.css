@@ -20,3 +20,8 @@
 .transaction-list__list-item-amount {
     float: right;
 }
+
+/* Add Transaction form styles */
+.add-transaction-form {
+    margin-top: 20px;
+}
