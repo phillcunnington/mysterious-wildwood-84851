@@ -7,7 +7,8 @@
     "build": "NODE_ENV=production webpack",
     "dev": "node_modules/.bin/webpack-dev-server",
     "server": "nf start",
-    "start": "NODE_ENV=production nf start"
+    "start": "NODE_ENV=production nf start",
+    "test": "exit 0"
   },
   "repository": {
     "type": "git",
