@@ -11,6 +11,7 @@ export function addTransaction(transaction) {
             return response.json();
         }).then((json) => {
             dispatch(transactionAdded(json));
+            dispatch(getBalance());
         }).catch(error => {
             console.error("Failed to add transaction: " + JSON.stringify(transaction));
         });
@@ -44,4 +45,26 @@ export function loadTransactions() {
             console.error("Failed to get transactions");
         });
     }
+}
+
+const setBalance = (balance) => {
+    return {
+        type: "SET_BALANCE",
+        currentBalance: balance.currentBalance
+    }
 };
+
+export function getBalance() {
+    return (dispatch) => {
+        fetch("/api/balance", {
+            method: "GET",
+            credentials: "same-origin"
+        }).then(response => {
+            return response.json();
+        }).then((json) => {
+            dispatch(setBalance(json));
+        }).catch(error => {
+            console.error("Failed to get balance");
+        });
+    }
+}

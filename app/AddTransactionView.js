@@ -39,7 +39,7 @@ const AddTransactionForm = React.createClass({
 
     render() {
         return (
-            <div className="add-transaction-form">
+            <div>
                 <Form horizontal>
                     <FormGroup>
                         <Col componentClass={ControlLabel} sm={2}>

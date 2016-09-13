@@ -10,7 +10,7 @@
 
 /* Transaction list styles */
 .transaction-list {
-    padding-top: 35px;
+    padding-top: 15px;
 }
 
 .list-group {
@@ -19,9 +19,4 @@
 
 .transaction-list__list-item-amount {
     float: right;
-}
-
-/* Add Transaction form styles */
-.add-transaction-form {
-    margin-top: 20px;
 }
