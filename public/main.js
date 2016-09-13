@@ -29319,9 +29319,9 @@
 	
 	var _TransactionListView2 = _interopRequireDefault(_TransactionListView);
 	
-	var _AddTransactionCollapsable = __webpack_require__(626);
+	var _AddTransactionModal = __webpack_require__(626);
 	
-	var _AddTransactionCollapsable2 = _interopRequireDefault(_AddTransactionCollapsable);
+	var _AddTransactionModal2 = _interopRequireDefault(_AddTransactionModal);
 	
 	var _actions = __webpack_require__(628);
 	
@@ -29349,7 +29349,7 @@
 	          "Logout"
 	        )
 	      ),
-	      _react2.default.createElement(_AddTransactionCollapsable2.default, null),
+	      _react2.default.createElement(_AddTransactionModal2.default, null),
 	      _react2.default.createElement(_TransactionListView2.default, { transactions: this.props.transactions })
 	    );
 	  }
@@ -79706,48 +79706,59 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var ADD_TRANSACTION_BUTTON_TEXT = "Add";
-	var HIDE_BUTTON_TEXT = "Hide";
-	
-	var AddTransactionCollapsable = _react2.default.createClass({
-	    displayName: "AddTransactionCollapsable",
+	var AddTransactionModal = _react2.default.createClass({
+	    displayName: "AddTransactionModal",
 	    getInitialState: function getInitialState() {
-	        return {
-	            open: false,
-	            buttonText: ADD_TRANSACTION_BUTTON_TEXT
-	        };
+	        return { showModal: false };
+	    },
+	    close: function close() {
+	        this.setState({ showModal: false });
+	    },
+	    open: function open() {
+	        this.setState({ showModal: true });
 	    },
 	    render: function render() {
-	        var _this = this;
-	
 	        return _react2.default.createElement(
 	            "div",
 	            null,
 	            _react2.default.createElement(
 	                _reactBootstrap.Button,
-	                { onClick: function onClick() {
-	                        return _this.setState({
-	                            open: !_this.state.open,
-	                            buttonText: _this.state.open ? ADD_TRANSACTION_BUTTON_TEXT : HIDE_BUTTON_TEXT
-	                        });
-	                    } },
-	                this.state.buttonText
+	                { onClick: this.open },
+	                "Add Transaction"
 	            ),
 	            _react2.default.createElement(
-	                _reactBootstrap.Collapse,
-	                { "in": this.state.open },
+	                _reactBootstrap.Modal,
+	                { animation: false, show: this.state.showModal, onHide: this.close },
 	                _react2.default.createElement(
-	                    "div",
+	                    _reactBootstrap.Modal.Header,
+	                    { closeButton: true },
+	                    _react2.default.createElement(
+	                        _reactBootstrap.Modal.Title,
+	                        null,
+	                        "New Transaction"
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    _reactBootstrap.Modal.Body,
 	                    null,
 	                    _react2.default.createElement(_AddTransactionView2.default, null)
+	                ),
+	                _react2.default.createElement(
+	                    _reactBootstrap.Modal.Footer,
+	                    null,
+	                    _react2.default.createElement(
+	                        _reactBootstrap.Button,
+	                        { onClick: this.close },
+	                        "Close"
+	                    )
 	                )
 	            )
 	        );
 	    }
 	});
-	exports.default = AddTransactionCollapsable;
+	exports.default = AddTransactionModal;
 	
-	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/Users/Phill/Desktop/mysterious-wildwood-84851/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "AddTransactionCollapsable.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/Users/Phill/Desktop/mysterious-wildwood-84851/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "AddTransactionModal.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 
 /***/ },
 /* 627 */
@@ -79797,12 +79808,7 @@
 	        this.setState(this.getInitialState());
 	    },
 	    clearForm: function clearForm() {
-	        console.log("this.state: before - " + JSON.stringify(this.state));
-	        console.log("this.getInitialState(): " + JSON.stringify(this.getInitialState()));
-	        this.setState({ date: "" });
-	        console.log("this.state: between - " + JSON.stringify(this.state));
 	        this.setState(this.getInitialState());
-	        console.log("this.state: after - " + JSON.stringify(this.state));
 	    },
 	    handleDateChange: function handleDateChange(e) {
 	        this.setState({ date: (0, _moment2.default)(e.target.value, "DD/MM/YYYY") });
@@ -79885,20 +79891,11 @@
 	                    null,
 	                    _react2.default.createElement(
 	                        _reactBootstrap.Col,
-	                        { smOffset: 2, sm: 5 },
+	                        { smOffset: 10, sm: 2 },
 	                        _react2.default.createElement(
 	                            _reactBootstrap.Button,
 	                            { onClick: this.handleSubmit },
 	                            "Add"
-	                        )
-	                    ),
-	                    _react2.default.createElement(
-	                        _reactBootstrap.Col,
-	                        { smOffset: 3, sm: 2 },
-	                        _react2.default.createElement(
-	                            _reactBootstrap.Button,
-	                            { onClick: this.clearForm },
-	                            "Clear"
 	                        )
 	                    )
 	                )

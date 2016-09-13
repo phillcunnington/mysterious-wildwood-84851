@@ -22,12 +22,7 @@ const AddTransactionForm = React.createClass({
     },
 
     clearForm() {
-        console.log("this.state: before - " + JSON.stringify(this.state));
-        console.log("this.getInitialState(): " + JSON.stringify(this.getInitialState()));
-        this.setState({date: ""});
-        console.log("this.state: between - " + JSON.stringify(this.state));
         this.setState(this.getInitialState());
-        console.log("this.state: after - " + JSON.stringify(this.state));
     },
 
     handleDateChange(e) {
@@ -83,11 +78,8 @@ const AddTransactionForm = React.createClass({
                         </Col>
                     </FormGroup>
                     <FormGroup>
-                        <Col smOffset={2} sm={5}>
+                        <Col smOffset={10} sm={2}>
                             <Button onClick={this.handleSubmit}>Add</Button>
-                        </Col>
-                        <Col smOffset={3} sm={2}>
-                            <Button onClick={this.clearForm}>Clear</Button>
                         </Col>
                     </FormGroup>
                 </Form>

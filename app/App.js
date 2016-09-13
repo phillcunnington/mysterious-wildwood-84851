@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from "react";
 import { connect } from "react-redux";
 import { Button } from "react-bootstrap";
 import TransactionListView from "./TransactionListView";
-import AddTransactionCollapsable from "./AddTransactionCollapsable";
+import AddTransactionModal from "./AddTransactionModal";
 import { loadTransactions } from "./actions";
 
 const App = React.createClass({
@@ -15,7 +15,7 @@ const App = React.createClass({
     return (
       <div className="app">
         <span className="app__logout-button"><Button bsStyle="link" href="auth/logout">Logout</Button></span>
-        <AddTransactionCollapsable />
+        <AddTransactionModal />
         <TransactionListView transactions={this.props.transactions} />
       </div>
     );
