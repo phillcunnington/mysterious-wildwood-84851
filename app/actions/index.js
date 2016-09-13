@@ -12,11 +12,19 @@ export function addTransaction(transaction) {
         }).then((json) => {
             dispatch(transactionAdded(json));
             dispatch(getBalance());
+            dispatch(updateMonthlySpend(json));
         }).catch(error => {
             console.error("Failed to add transaction: " + JSON.stringify(transaction));
         });
     }
 }
+
+const updateMonthlySpend = (transaction) => {
+    return {
+        type: "UPDATE_MONTHLY_SPEND",
+        transaction
+    }
+};
 
 const transactionAdded = (transaction) => {
     return {
@@ -41,6 +49,7 @@ export function loadTransactions() {
             return response.json();
         }).then((json) => {
             dispatch(setTransactions(json));
+            dispatch(initialiseMonthlySpend(json));
         }).catch(error => {
             console.error("Failed to get transactions");
         });
@@ -68,3 +77,10 @@ export function getBalance() {
         });
     }
 }
+
+export const initialiseMonthlySpend = (transactions) => {
+    return {
+        type: "INIT_MONTHLY_SPEND",
+        transactions
+    }
+};

@@ -89,11 +89,11 @@
 	
 	var _App2 = _interopRequireDefault(_App);
 	
-	var _LandingPage = __webpack_require__(630);
+	var _LandingPage = __webpack_require__(631);
 	
 	var _LandingPage2 = _interopRequireDefault(_LandingPage);
 	
-	var _FailedLoginPage = __webpack_require__(631);
+	var _FailedLoginPage = __webpack_require__(632);
 	
 	var _FailedLoginPage2 = _interopRequireDefault(_FailedLoginPage);
 	
@@ -29258,9 +29258,37 @@
 	    }
 	};
 	
+	var COMPARISON_MONTH = (0, _moment2.default)().month();
+	var monthlySpend = function monthlySpend() {
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+	    var action = arguments[1];
+	
+	    switch (action.type) {
+	        case "INIT_MONTHLY_SPEND":
+	            return _lodash2.default.chain(action.transactions).filter(function (transaction) {
+	                return (0, _moment2.default)(transaction.date).month() == COMPARISON_MONTH;
+	            }).map(function (transaction) {
+	                return transaction.amount;
+	            }).reduce(function (sum, n) {
+	                return sum + n;
+	            }).value() || state;
+	        case "UPDATE_MONTHLY_SPEND":
+	            return _lodash2.default.chain([action.transaction]).filter(function (transaction) {
+	                return (0, _moment2.default)(transaction.date).month() == COMPARISON_MONTH;
+	            }).map(function (transaction) {
+	                return transaction.amount;
+	            }).reduce(function (sum, n) {
+	                return sum + n;
+	            }).value() + state;
+	        default:
+	            return state;
+	    }
+	};
+	
 	var appReducers = (0, _redux.combineReducers)({
 	    transactions: _transactions2.default,
-	    currentBalance: currentBalance
+	    currentBalance: currentBalance,
+	    monthlySpend: monthlySpend
 	});
 	
 	exports.default = appReducers;
@@ -60138,6 +60166,10 @@
 	
 	var _CurrentBalance2 = _interopRequireDefault(_CurrentBalance);
 	
+	var _MonthlySpend = __webpack_require__(630);
+	
+	var _MonthlySpend2 = _interopRequireDefault(_MonthlySpend);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var App = _react2.default.createClass({
@@ -60171,7 +60203,8 @@
 	      _react2.default.createElement(
 	        "div",
 	        { style: { marginTop: "20px" } },
-	        _react2.default.createElement(_CurrentBalance2.default, { currentBalance: this.props.currentBalance })
+	        _react2.default.createElement(_CurrentBalance2.default, { currentBalance: this.props.currentBalance }),
+	        _react2.default.createElement(_MonthlySpend2.default, { monthlySpend: this.props.monthlySpend })
 	      ),
 	      _react2.default.createElement(_AddTransactionModal2.default, null),
 	      _react2.default.createElement(_TransactionListView2.default, { transactions: this.props.transactions })
@@ -60182,7 +60215,8 @@
 	var mapStateToProps = function mapStateToProps(state) {
 	  return {
 	    transactions: state.transactions,
-	    currentBalance: state.currentBalance
+	    currentBalance: state.currentBalance,
+	    monthlySpend: state.monthlySpend
 	  };
 	};
 	
@@ -78917,11 +78951,19 @@
 	        }).then(function (json) {
 	            dispatch(transactionAdded(json));
 	            dispatch(getBalance());
+	            dispatch(updateMonthlySpend(json));
 	        }).catch(function (error) {
 	            console.error("Failed to add transaction: " + JSON.stringify(transaction));
 	        });
 	    };
 	}
+	
+	var updateMonthlySpend = function updateMonthlySpend(transaction) {
+	    return {
+	        type: "UPDATE_MONTHLY_SPEND",
+	        transaction: transaction
+	    };
+	};
 	
 	var transactionAdded = function transactionAdded(transaction) {
 	    return {
@@ -78946,6 +78988,7 @@
 	            return response.json();
 	        }).then(function (json) {
 	            dispatch(setTransactions(json));
+	            dispatch(initialiseMonthlySpend(json));
 	        }).catch(function (error) {
 	            console.error("Failed to get transactions");
 	        });
@@ -78973,6 +79016,13 @@
 	        });
 	    };
 	}
+	
+	var initialiseMonthlySpend = exports.initialiseMonthlySpend = function initialiseMonthlySpend(transactions) {
+	    return {
+	        type: "INIT_MONTHLY_SPEND",
+	        transactions: transactions
+	    };
+	};
 	
 	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/Users/Phill/Desktop/mysterious-wildwood-84851/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "index.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 
@@ -80081,6 +80131,46 @@
 	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _react = __webpack_require__(6);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactBootstrap = __webpack_require__(372);
+	
+	var _configureNumeral = __webpack_require__(625);
+	
+	var _configureNumeral2 = _interopRequireDefault(_configureNumeral);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var MonthlySpend = function MonthlySpend(_ref) {
+	    var monthlySpend = _ref.monthlySpend;
+	    return _react2.default.createElement(
+	        _reactBootstrap.Well,
+	        { style: { display: "inline-block" } },
+	        "Spent this month: ",
+	        (0, _configureNumeral2.default)(monthlySpend / 100).format()
+	    );
+	};
+	MonthlySpend.propTypes = {
+	    monthlySpend: _react.PropTypes.number.isRequired
+	};
+	exports.default = MonthlySpend;
+	
+	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/Users/Phill/Desktop/mysterious-wildwood-84851/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "MonthlySpend.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+
+/***/ },
+/* 631 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/Users/Phill/Desktop/mysterious-wildwood-84851/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/Users/Phill/Desktop/mysterious-wildwood-84851/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
+	
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	
@@ -80125,7 +80215,7 @@
 	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/Users/Phill/Desktop/mysterious-wildwood-84851/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "LandingPage.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 
 /***/ },
-/* 631 */
+/* 632 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/Users/Phill/Desktop/mysterious-wildwood-84851/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/Users/Phill/Desktop/mysterious-wildwood-84851/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
@@ -80142,7 +80232,7 @@
 	
 	var _reactBootstrap = __webpack_require__(372);
 	
-	var _reactRouterBootstrap = __webpack_require__(632);
+	var _reactRouterBootstrap = __webpack_require__(633);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -80178,7 +80268,7 @@
 	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/Users/Phill/Desktop/mysterious-wildwood-84851/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "FailedLoginPage.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 
 /***/ },
-/* 632 */
+/* 633 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80186,11 +80276,11 @@
 	exports.__esModule = true;
 	exports.LinkContainer = exports.IndexLinkContainer = undefined;
 	
-	var _IndexLinkContainer2 = __webpack_require__(633);
+	var _IndexLinkContainer2 = __webpack_require__(634);
 	
 	var _IndexLinkContainer3 = _interopRequireDefault(_IndexLinkContainer2);
 	
-	var _LinkContainer2 = __webpack_require__(634);
+	var _LinkContainer2 = __webpack_require__(635);
 	
 	var _LinkContainer3 = _interopRequireDefault(_LinkContainer2);
 	
@@ -80200,7 +80290,7 @@
 	exports.LinkContainer = _LinkContainer3.default;
 
 /***/ },
-/* 633 */
+/* 634 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80213,7 +80303,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _LinkContainer = __webpack_require__(634);
+	var _LinkContainer = __webpack_require__(635);
 	
 	var _LinkContainer2 = _interopRequireDefault(_LinkContainer);
 	
@@ -80249,7 +80339,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 634 */
+/* 635 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
